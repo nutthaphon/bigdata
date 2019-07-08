@@ -1,0 +1,67 @@
+version: "3"
+
+services:
+  namenode:
+    image: nutthaphon/hadoop:3.1.2-jdk8
+    container_name: namenode
+    hostname: namenode
+    working_dir: "/program/hadoop"
+    stdin_open: true
+    tty: true
+    ports:
+      # SSH
+      - "2222:22"
+      # Hadoop Namenode Web
+      - "9870:9870"
+      # YARN Resource Manager
+      - "8088:8088"
+    volumes:
+      - bigdata-program:/program
+  
+  hbase:
+    image: nutthaphon/hbase:2.2.0-jdk8
+    container_name: hbase
+    hostname: hbase
+    working_dir: "/program/hbase"
+    stdin_open: true
+    tty: true
+    ports:
+      # SSH
+      - "2223:22"
+      # ZooKeeper clients
+      - "2181:2181"
+      # ZooKeeper server
+      - "2888:2888"
+      # ZooKeeper leader election
+      - "3888:3888"
+      # HBase Master web 
+      - "16010:16010"
+    volumes:
+      - bigdata-program:/program
+  hiveserver2:
+    image: nutthaphon/hive2:3.1.1-jdk8
+    container_name: hiveserver2
+    hostname: hiveserver2
+    working_dir: "/program/hive"
+    stdin_open: true
+    tty: true
+    ports:
+      # SSH
+      - "2224:22"
+      # Derby
+      - "1527:1527"
+      # Thrift RPC
+      - "10000:10000"
+      # Thrift HTTP (JDBC)
+      - "10001:10001"
+      # HiveServer2 web
+      - "10002:10002"
+    volumes:  
+      - bigdata-program:/program
+volumes:
+  bigdata-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata
