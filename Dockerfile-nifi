@@ -1,0 +1,13 @@
+FROM nutthaphon/nifi:1.9.2-jdk8
+
+LABEL maintainer="nutthaphon@gmail.com"
+
+USER nifi
+
+EXPOSE 8080 9443 10443
+
+ENV JAVA_HOME /program/java/jdk1.8.0_211
+
+WORKDIR /program/nifi/nifi-1.9.2
+
+CMD ["bin/nifi.sh", "run"]
