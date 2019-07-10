@@ -52,10 +52,29 @@ services:
       - "1527:1527"
       # Thrift RPC
       - "10000:10000"
-      # Thrift HTTP (JDBC)
+      # Thrift HTTP
       - "10001:10001"
       # HiveServer2 web
       - "10002:10002"
+    volumes:  
+      - bigdata-program:/program
+  nifiserver:
+    image: nutthaphon/nifi:1.9.2-jdk8
+    restart: always
+    container_name: nifiserver
+    hostname: nifiserver
+    working_dir: "/program/nifi/nifi-1.9.2"
+    #stdin_open: true
+    #tty: true
+    ports:
+      # SSH
+      - "2225:22"
+      # HTTP
+      - "8080:8080"
+      # HTTPS
+      - "9443:9443"
+      # Remote Input Socket
+      - "10443:10443"
     volumes:  
       - bigdata-program:/program
 volumes:
@@ -64,4 +83,4 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata
+      device: /home/ossadmin/Docker/bigdata
