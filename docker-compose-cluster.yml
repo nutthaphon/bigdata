@@ -154,8 +154,29 @@ services:
     volumes:
       - mongo-data:/data/db
       #- mongo-conf:/etc/mongo
-      
+  
+  columnstore:
+    image: mariadb/columnstore:1.2.3
+    command: --datadir=/var/lib/mysql
+    #restart: always
+    container_name: columnstore
+    hostname: columnstore
+    environment:
+      MARIADB_ROOT_PASSWORD: P@ssw0rd1
+    ports:
+      # MariaDB listening port
+      - "3306:3306"
+    
+    volumes:
+      - mariadb-data:/var/lib/mysql
+
 volumes:
+  mariadb-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/mariadb/data
   mongo-data:
     driver: local
     driver_opts:
