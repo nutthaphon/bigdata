@@ -14,3 +14,13 @@ java/
 nifi/
 
 zookeeper/
+
+mongo/
+
+anaconda/
+
+hadoop-3\.1\.2-cluster/
+
+zeppelin/
+
+spark/

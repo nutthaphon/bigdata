@@ -83,4 +83,4 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/ossadmin/Docker/bigdata
+      device: /home/nutt/Docker/bigdata

@@ -1,4 +1,4 @@
-FROM nutthaphon/nifi:1.9.2-jdk8
+FROM nutthaphon/ubuntu:18.04
 
 LABEL maintainer="nutthaphon@gmail.com"
 

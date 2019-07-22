@@ -1,0 +1,219 @@
+version: "3"
+
+services:
+  hdmaster:
+    image: nutthaphon/hadoop-master:3.1.2-spark2.4.3-jdk8
+    container_name: hdmaster
+    hostname: hdmaster
+    working_dir: "/spark"
+    #user: "1000:1000"
+    stdin_open: true
+    tty: true
+    environment:
+      - CLUSTER_NAME=poc
+    ports:
+      # SSH
+      - "2220:22"
+      # Hadoop Namenode Web
+      - "9870:9870"
+      # Hadoop Datanode Web
+      - "9864:9864"
+      # YARN Resource Manager
+      - "8088:8088"
+      # MapReduce JobHistory Server 
+      - "19888:19888"
+      # Spark Context Web UI
+      - "4040:4040"
+      # Spark History Server]
+      - "18080:18080"
+    volumes:
+      - hdmaster-hadoop:/hadoop
+      - java-program:/java
+      - spark-program:/spark
+  
+  hdslave1:
+    image: nutthaphon/hadoop-slave1:3.1.2-spark2.4.3-jdk8
+    container_name: hdslave1
+    hostname: hdslave1
+    working_dir: "/spark"
+    #user: "1000:1000"
+    stdin_open: true
+    tty: true
+    ports:
+      # SSH
+      - "2221:22"
+      # Hadoop Datanode Web
+      - "9864:9864"
+      # Spark Context Web UI
+      - "4040:4040"
+      # Node Manager
+    volumes:
+      - hdslave1-hadoop:/hadoop
+      - java-program:/java
+      - spark-program:/spark
+
+  hdslave2:
+    image: nutthaphon/hadoop-slave2:3.1.2-spark2.4.3-jdk8
+    container_name: hdslave2
+    hostname: hdslave2
+    working_dir: "/spark"
+    #user: "1000:1000"
+    stdin_open: true
+    tty: true
+    ports:
+      # SSH
+      - "2222:22"
+      # Hadoop Datanode Web
+      - "9864:9864"
+      # Spark Context Web UI
+      - "4040:4040"
+      # Node Manager
+    volumes:
+      - hdslave2-hadoop:/hadoop
+      - java-program:/java
+      - spark-program:/spark
+  
+  hiveserver2:
+    image: nutthaphon/hive2:3.1.1-jdk8
+    container_name: hiveserver2
+    hostname: hiveserver2
+    working_dir: "/program/hive"
+    stdin_open: true
+    tty: true
+    ports:
+      # SSH
+      - "2224:22"
+      # Derby
+      - "1527:1527"
+      # Thrift RPC
+      - "10000:10000"
+      # Thrift HTTP
+      - "10001:10001"
+      # HiveServer2 web
+      - "10002:10002"
+    volumes: 
+      - hdmaster-hadoop:/hadoop
+      - java-program:/java
+      - bigdata-program:/program
+
+  nifiserver:
+    image: nutthaphon/nifi:1.9.2-jdk8
+    #restart: always
+    container_name: nifiserver
+    hostname: nifiserver
+    working_dir: "/program/nifi/nifi-1.9.2"
+    #stdin_open: true
+    #tty: true
+    ports:
+      # SSH
+      - "2225:22"
+      # HTTP
+      - "8080:8080"
+      # HTTPS
+      - "9443:9443"
+      # Remote Input Socket
+      - "10443:10443"
+    volumes:  
+      - bigdata-program:/program
+
+  zeppelin:
+    image: nutthaphon/zeppelin:0.8.1-sshd
+    #restart: always
+    container_name: zeppelin
+    hostname: zeppelin
+    #working_dir: "/zeppelin"
+    #stdin_open: true
+    #tty: true
+    environment:
+      - ZEPPELIN_NOTEBOOK_DIR=/workspace/notebook
+      - ZEPPELIN_LOG_DIR=/workspace/logs
+    ports:
+      # SSH
+      - "2226:22"
+      # HTTP
+      - "9080:8080"
+    volumes:  
+      - zeppelin-workspace:/workspace
+      - hdmaster-hadoop:/hadoop
+      - java-program:/java
+      - spark-program:/spark
+  
+  mongodb:
+    image: mongo
+    command: --bind_ip 0.0.0.0
+    #restart: always
+    container_name: mongodb
+    hostname: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: P@ssw0rd1
+    ports:
+      # MongoDB listening port
+      - "27017:27017"
+    
+    volumes:
+      - mongo-data:/data/db
+      #- mongo-conf:/etc/mongo
+      
+volumes:
+  mongo-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/mongo/data
+  mongo-conf:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/mongo/conf
+  bigdata-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata
+  zeppelin-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/zeppelin/0.8.1
+  zeppelin-workspace:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/zeppelin/workspace
+  java-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/java/jdk1.8.0_211
+  spark-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/spark/spark-2.4.3-bin-hadoop2.7
+  hdmaster-hadoop:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdmaster
+  hdslave1-hadoop:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave1
+  hdslave2-hadoop:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave2
+
