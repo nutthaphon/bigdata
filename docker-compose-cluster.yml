@@ -157,7 +157,6 @@ services:
   
   columnstore:
     image: mariadb/columnstore:1.2.3
-    command: --datadir=/var/lib/mysql
     #restart: always
     container_name: columnstore
     hostname: columnstore
