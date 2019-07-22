@@ -166,17 +166,36 @@ services:
     ports:
       # MariaDB listening port
       - "3306:3306"
-    
     volumes:
-      - mariadb-data:/var/lib/mysql
-
+      - mariadb-etc:/usr/local/mariadb/columnstore/etc
+      - mariadb-data1:/usr/local/mariadb/columnstore/data1
+      - mariadb-local:/usr/local/mariadb/columnstore/local
+      - mariadb-mysql-db:/usr/local/mariadb/columnstore/mysql/db
 volumes:
-  mariadb-data:
+  mariadb-etc:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/ossadmin/Docker/bigdata/mariadb/data
+      device: /home/ossadmin/Docker/bigdata/mariadb/columnstore/etc
+  mariadb-data1:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/mariadb/columnstore/data1
+  mariadb-local:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/mariadb/columnstore/local
+  mariadb-mysql-db:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/mariadb/columnstore/mysql/db
   mongo-data:
     driver: local
     driver_opts:
