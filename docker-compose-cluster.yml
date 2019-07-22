@@ -161,59 +161,59 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/mongo/data
+      device: /home/ossadmin/Docker/bigdata/mongo/data
   mongo-conf:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/mongo/conf
+      device: /home/ossadmin/Docker/bigdata/mongo/conf
   bigdata-program:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata
+      device: /home/ossadmin/Docker/bigdata
   zeppelin-program:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/zeppelin/0.8.1
+      device: /home/ossadmin/Docker/bigdata/zeppelin/0.8.1
   zeppelin-workspace:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/zeppelin/workspace
+      device: /home/ossadmin/Docker/bigdata/zeppelin/workspace
   java-program:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/java/jdk1.8.0_211
+      device: /home/ossadmin/Docker/bigdata/java/jdk1.8.0_211
   spark-program:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/spark/spark-2.4.3-bin-hadoop2.7
+      device: /home/ossadmin/Docker/bigdata/spark/spark-2.4.3-bin-hadoop2.7
   hdmaster-hadoop:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdmaster
+      device: /home/ossadmin/Docker/bigdata/hadoop-3.1.2-cluster/hdmaster
   hdslave1-hadoop:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave1
+      device: /home/ossadmin/Docker/bigdata/hadoop-3.1.2-cluster/hdslave1
   hdslave2-hadoop:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave2
+      device: /home/ossadmin/Docker/bigdata/hadoop-3.1.2-cluster/hdslave2
 
