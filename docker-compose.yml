@@ -1,27 +1,81 @@
 version: "3"
 
 services:
-  namenode:
-    image: nutthaphon/hadoop:3.1.2-jdk8
-    container_name: namenode
-    hostname: namenode
-    working_dir: "/program/hadoop"
+  hdmaster:
+    image: nutthaphon/hadoop-master:3.1.2-spark2.4.3-jdk8
+    container_name: hdmaster
+    hostname: hdmaster
+    working_dir: "/spark"
+    stdin_open: true
+    tty: true
+    environment:
+      - CLUSTER_NAME=poc
+    ports:
+      # SSH
+      - "2220:22"
+      # Hadoop Namenode Web
+      - "9870:9870"
+      # Hadoop Datanode Web
+      - "9864:9864"
+      # YARN Resource Manager
+      - "8088:8088"
+      # MapReduce JobHistory Server 
+      - "19888:19888"
+      # Spark Context Web UI
+      - "4040:4040"
+      # Spark History Server]
+      - "18080:18080"
+    volumes:
+      - hdmaster-hadoop:/hadoop
+      - java-program:/java
+      - spark-program:/spark
+  
+  hdslave1:
+    image: nutthaphon/hadoop-slave1:3.1.2-spark2.4.3-jdk8
+    container_name: hdslave1
+    hostname: hdslave1
+    working_dir: "/spark"
+    stdin_open: true
+    tty: true
+    ports:
+      # SSH
+      - "2221:22"
+      # Hadoop Datanode Web
+      - "9864:9864"
+      # Spark Context Web UI
+      - "4040:4040"
+      # Node Manager
+    volumes:
+      - hdslave1-hadoop:/hadoop
+      - java-program:/java
+      - spark-program:/spark
+  
+  hdslave2:
+    image: nutthaphon/hadoop-slave2:3.1.2-spark2.4.3-jdk8
+    container_name: hdslave2
+    hostname: hdslave2
+    working_dir: "/spark"
     stdin_open: true
     tty: true
     ports:
       # SSH
       - "2222:22"
-      # Hadoop Namenode Web
-      - "9870:9870"
-      # YARN Resource Manager
-      - "8088:8088"
+      # Hadoop Datanode Web
+      - "9864:9864"
+      # Spark Context Web UI
+      - "4040:4040"
+      # Node Manager
     volumes:
-      - bigdata-program:/program
-  
+      - hdslave2-hadoop:/hadoop
+      - java-program:/java
+      - spark-program:/spark
+
   hbase:
     image: nutthaphon/hbase:2.2.0-jdk8
     container_name: hbase
     hostname: hbase
+    auto_up: false
+    auto_start: false
     working_dir: "/program/hbase"
     stdin_open: true
     tty: true
@@ -38,6 +92,7 @@ services:
       - "16010:16010"
     volumes:
       - bigdata-program:/program
+  
   hiveserver2:
     image: nutthaphon/hive2:3.1.1-jdk8
     container_name: hiveserver2
@@ -58,6 +113,7 @@ services:
       - "10002:10002"
     volumes:  
       - bigdata-program:/program
+  
   nifiserver:
     image: nutthaphon/nifi:1.9.2-jdk8
     restart: always
@@ -77,6 +133,29 @@ services:
       - "10443:10443"
     volumes:  
       - bigdata-program:/program
+  
+  zeppelin:
+    image: nutthaphon/zeppelin:0.8.1-sshd
+    #restart: always
+    container_name: zeppelin
+    hostname: zeppelin
+    #working_dir: "/zeppelin"
+    #stdin_open: true
+    #tty: true
+    environment:
+      - ZEPPELIN_NOTEBOOK_DIR=/workspace/notebook
+      - ZEPPELIN_LOG_DIR=/workspace/logs
+    ports:
+      # SSH
+      - "2226:22"
+      # HTTP
+      - "9080:8080"
+    volumes:  
+      - zeppelin-workspace:/workspace
+      - hdmaster-hadoop:/hadoop
+      - java-program:/java
+      - spark-program:/spark
+
 volumes:
   bigdata-program:
     driver: local
@@ -84,3 +163,39 @@ volumes:
       o: bind
       type: none
       device: /home/nutt/Docker/bigdata
+  zeppelin-workspace:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/zeppelin/workspace
+  java-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/java/jdk1.8.0_211
+  spark-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/spark/spark-2.4.3-bin-hadoop2.7
+  hdmaster-hadoop:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdmaster
+  hdslave1-hadoop:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave1
+  hdslave2-hadoop:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave2
