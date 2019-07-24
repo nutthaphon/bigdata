@@ -176,25 +176,25 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/ossadmin/Docker/bigdata/mariadb/columnstore/etc
+      device: /home/nutt/Docker/bigdata/mariadb/columnstore/etc
   mariadb-data1:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/ossadmin/Docker/bigdata/mariadb/columnstore/data1
+      device: /home/nutt/Docker/bigdata/mariadb/columnstore/data1
   mariadb-local:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/ossadmin/Docker/bigdata/mariadb/columnstore/local
+      device: /home/nutt/Docker/bigdata/mariadb/columnstore/local
   mariadb-mysql-db:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/ossadmin/Docker/bigdata/mariadb/columnstore/mysql/db
+      device: /home/nutt/Docker/bigdata/mariadb/columnstore/mysql/db
   mongo-data:
     driver: local
     driver_opts:
