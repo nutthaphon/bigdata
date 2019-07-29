@@ -7,8 +7,8 @@ services:
     hostname: hdmaster
     working_dir: "/spark"
     #user: "1000:1000"
-    stdin_open: true
-    tty: true
+    #stdin_open: true
+    #tty: true
     environment:
       - CLUSTER_NAME=poc
     ports:
@@ -24,12 +24,16 @@ services:
       - "19888:19888"
       # Spark Context Web UI
       - "4040:4040"
-      # Spark History Server]
+      # Spark History Server
       - "18080:18080"
+      # Livy Spark Server
+      - "8998:8998"
     volumes:
       - hdmaster-hadoop:/hadoop
       - java-program:/java
       - spark-program:/spark
+      - livy-spark:/livy
+      - pig-program:/pig
   
   hdslave1:
     image: nutthaphon/hadoop-slave1:3.1.2-spark2.4.3-jdk8
@@ -37,8 +41,8 @@ services:
     hostname: hdslave1
     working_dir: "/spark"
     #user: "1000:1000"
-    stdin_open: true
-    tty: true
+    #stdin_open: true
+    #tty: true
     ports:
       # SSH
       - "2221:22"
@@ -58,8 +62,8 @@ services:
     hostname: hdslave2
     working_dir: "/spark"
     #user: "1000:1000"
-    stdin_open: true
-    tty: true
+    #stdin_open: true
+    #tty: true
     ports:
       # SSH
       - "2222:22"
@@ -170,6 +174,56 @@ services:
       - mariadb-data1:/usr/local/mariadb/columnstore/data1
       - mariadb-local:/usr/local/mariadb/columnstore/local
       - mariadb-mysql-db:/usr/local/mariadb/columnstore/mysql/db
+
+  mysql:
+    image: nutthaphon/mariadb:10.4.6
+    command: --character-set-server=tis620 --collation-server=tis620_thai_ci
+    #restart: always
+    container_name: mysql
+    hostname: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd1
+    ports:
+      # Mysql listening port
+      - "13306:3306"
+    volumes:
+      - mysql-data1:/var/lib/mysql
+      - mysql-conf:/etc/mysql/conf.d
+
+  hueserver:
+    image: nutthaphon/hue:4.4.0
+    depends_on:
+      - mysql
+      - hiveserver2
+    #restart: always
+    #stdin_open: true
+    #tty: true
+    container_name: hueserver
+    hostname: hueserver
+    ports:
+      # Web listening port
+      - "8888:8888"
+    volumes:
+      - hdmaster-hadoop:/hadoop
+      - /home/ossadmin/Docker/bigdata/hue/conf/hue.ini:/usr/share/hue/desktop/conf/hue.ini
+
+  oozie:
+    image: nutthaphon/oozie:5.1.0
+    working_dir: "/oozie"
+    #restart: always
+    #stdin_open: true
+    #tty: true
+    container_name: oozie
+    hostname: oozie
+    ports:
+      # Oozie Web console
+      - "11000:11000"
+    volumes:
+      - hdmaster-hadoop:/hadoop
+      - oozie-program:/oozie
+      - pig-program:/pig
+      - java-program:/java
+
 volumes:
   mariadb-etc:
     driver: local
@@ -237,6 +291,12 @@ volumes:
       o: bind
       type: none
       device: /home/ossadmin/Docker/bigdata/spark/spark-2.4.3-bin-hadoop2.7
+  livy-spark:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/spark/apache-livy-0.6.0-incubating-bin
   hdmaster-hadoop:
     driver: local
     driver_opts:
@@ -255,4 +315,27 @@ volumes:
       o: bind
       type: none
       device: /home/ossadmin/Docker/bigdata/hadoop-3.1.2-cluster/hdslave2
-
+  oozie-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/oozie/oozie-5.1.0
+  pig-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/pig/pig-0.17.0
+  maven-program:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/maven/apache-maven-3.6.1
+  maven-repo:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/.m2

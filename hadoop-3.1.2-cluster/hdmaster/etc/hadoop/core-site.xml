@@ -53,6 +53,15 @@
         <name>hadoop.proxyuser.spark.groups</name>
         <value>*</value>
     </property>
+    <!-- OOZIE -->
+    <property>
+        <name>hadoop.proxyuser.oozie.hosts</name>
+        <value>*</value>
+    </property>
+    <property>
+        <name>hadoop.proxyuser.oozie.groups</name>
+        <value>*</value>
+    </property>
     <property>
         <name>io.compression.codecs</name>
         <value>org.apache.hadoop.io.compress.SnappyCodec</value>
