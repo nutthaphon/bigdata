@@ -230,13 +230,13 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/mariadb/mysql/data1
+      device: /home/ossadmin/Docker/bigdata/mariadb/mysql/data1
   mysql-conf:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/mariadb/mysql/conf
+      device: /home/ossadmin/Docker/bigdata/mariadb/mysql/conf
   mariadb-etc:
     driver: local
     driver_opts:
