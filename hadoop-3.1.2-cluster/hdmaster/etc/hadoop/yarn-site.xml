@@ -65,4 +65,19 @@
         <name>yarn.nodemanager.disk-health-checker.max-disk-utilization-per-disk-percentage</name>
         <value>95</value>
     </property>
+    <property>
+        <name>yarn.application.classpath</name>
+        <value>
+            $HADOOP_CONF_DIR,
+            $HADOOP_COMMON_HOME/share/hadoop/common/*,
+            $HADOOP_COMMON_HOME/share/hadoop/common/lib/*,
+            $HADOOP_HDFS_HOME/share/hadoop/hdfs/*,
+            $HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,
+            $HADOOP_YARN_HOME/share/hadoop/yarn/*,
+            $HADOOP_YARN_HOME/share/hadoop/yarn/lib/*,
+            $HADOOP_MAPRED_HOME/share/hadoop/mapreduce/*,
+            $HADOOP_MAPRED_HOME/share/hadoop/mapreduce/lib/*,
+            /spark/examples/jars/*</value>
+    </property>
 </configuration>
+
