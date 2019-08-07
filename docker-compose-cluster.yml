@@ -26,6 +26,8 @@ services:
       - "4040:4040"
       # Spark History Server
       - "18080:18080"
+      # Spark Thrift Server
+      - "10003:10000" 
       # Livy Spark Server
       - "8998:8998"
     volumes:
@@ -147,7 +149,7 @@ services:
       - spark-program:/spark
   
   mongodb:
-    image: nutthaphon/mongo:4.0.10
+    image: nutthaphon/mongo:4.0.11
     command: --bind_ip 0.0.0.0
     #restart: always
     entrypoint: "bash -c"
@@ -160,10 +162,11 @@ services:
     ports:
       # MongoDB listening port
       - "27017:27017"
-    
+      # MongoD BI Connector Port
+      - "3307:3307"
     volumes:
       - mongo-data:/data/db
-      #- mongo-conf:/etc/mongo
+      #- mongo-conf:/data/configdb
   
   columnstore:
     image: nutthaphon/mariadb-columnstore:1.2.3
@@ -216,7 +219,7 @@ services:
       - /home/ossadmin/Docker/bigdata/hue/conf/hue.ini:/usr/share/hue/desktop/conf/hue.ini
 
   oozie:
-    image: nutthaphon/oozie:5.1.0
+    image: nutthaphon/oozie:5.1.0-jdk8
     working_dir: "/oozie"
     #restart: always
     #stdin_open: true
@@ -224,13 +227,15 @@ services:
     container_name: oozie
     hostname: oozie
     ports:
+      # SSH
+      - "2227:22"
       # Oozie Web console
       - "11000:11000"
     volumes:
       - hdmaster-hadoop:/hadoop
-      - oozie-program:/oozie
+      #- oozie-program:/oozie
       - pig-program:/pig
-      - java-program:/java
+      #- java-program:/java
 
 volumes:
   mysql-data1:
