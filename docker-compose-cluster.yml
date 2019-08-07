@@ -17,7 +17,7 @@ services:
       # Hadoop Namenode Web
       - "9870:9870"
       # Hadoop Datanode Web
-      - "9864:9864"
+      #- "9864:9864"
       # YARN Resource Manager
       - "8088:8088"
       # MapReduce JobHistory Server 
@@ -47,9 +47,9 @@ services:
       # SSH
       - "2221:22"
       # Hadoop Datanode Web
-      - "9864:9864"
+      #- "9864:9864"
       # Spark Context Web UI
-      - "4040:4040"
+      - "4041:4040"
       # Node Manager
     volumes:
       - hdslave1-hadoop:/hadoop
@@ -68,9 +68,9 @@ services:
       # SSH
       - "2222:22"
       # Hadoop Datanode Web
-      - "9864:9864"
+      #- "9864:9864"
       # Spark Context Web UI
-      - "4040:4040"
+      - "4042:4040"
       # Node Manager
     volumes:
       - hdslave2-hadoop:/hadoop
@@ -143,7 +143,7 @@ services:
       - spark-program:/spark
   
   mongodb:
-    image: mongo
+    image: nutthaphon/mongo:4.0.10
     command: --bind_ip 0.0.0.0
     #restart: always
     container_name: mongodb
@@ -160,7 +160,7 @@ services:
       #- mongo-conf:/etc/mongo
   
   columnstore:
-    image: mariadb/columnstore:1.2.3
+    image: nutthaphon/mariadb-columnstore:1.2.3
     #restart: always
     container_name: columnstore
     hostname: columnstore
@@ -225,6 +225,18 @@ services:
       - java-program:/java
 
 volumes:
+  mysql-data1:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/mariadb/mysql/data1
+  mysql-conf:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/ossadmin/Docker/bigdata/mariadb/mysql/conf
   mariadb-etc:
     driver: local
     driver_opts:
