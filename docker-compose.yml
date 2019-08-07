@@ -128,7 +128,7 @@ services:
       - "8888:8888"
     volumes:
       - hdmaster-hadoop:/hadoop
-      - /home/nutt/Docker/bigdata/hue/conf/hue.ini:/usr/share/hue/desktop/conf/hue.ini
+      - /home/ossadmin/Docker/bigdata/hue/conf/hue.ini:/usr/share/hue/desktop/conf/hue.ini
 
   oozie:
     image: nutthaphon/oozie:5.1.0
@@ -154,64 +154,64 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/mariadb/mysql/data1
+      device: /home/ossadmin/Docker/bigdata/mariadb/mysql/data1
   mysql-conf:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/mariadb/mysql/conf
+      device: /home/ossadmin/Docker/bigdata/mariadb/mysql/conf
   bigdata-program:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata
+      device: /home/ossadmin/Docker/bigdata
   java-program:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/java/jdk1.8.0_211
+      device: /home/ossadmin/Docker/bigdata/java/jdk1.8.0_211
   spark-program:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/spark/spark-2.4.3-bin-hadoop2.7
+      device: /home/ossadmin/Docker/bigdata/spark/spark-2.4.3-bin-hadoop2.7
   livy-spark:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/spark/apache-livy-0.6.0-incubating-bin
+      device: /home/ossadmin/Docker/bigdata/spark/apache-livy-0.6.0-incubating-bin
   hdmaster-hadoop:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdmaster
+      device: /home/ossadmin/Docker/bigdata/hadoop-3.1.2-cluster/hdmaster
   hdslave1-hadoop:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave1
+      device: /home/ossadmin/Docker/bigdata/hadoop-3.1.2-cluster/hdslave1
   hdslave2-hadoop:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave2
+      device: /home/ossadmin/Docker/bigdata/hadoop-3.1.2-cluster/hdslave2
   oozie-program:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/oozie/oozie-5.1.0
+      device: /home/ossadmin/Docker/bigdata/oozie/oozie-5.1.0
   pig-program:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/pig/pig-0.17.0
+      device: /home/ossadmin/Docker/bigdata/pig/pig-0.17.0
