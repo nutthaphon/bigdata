@@ -103,6 +103,8 @@ services:
   nifiserver:
     image: nutthaphon/nifi:1.9.2-jdk8
     #restart: always
+    entrypoint: "bash -c"
+    command: "exit 0"
     container_name: nifiserver
     hostname: nifiserver
     working_dir: "/program/nifi/nifi-1.9.2"
@@ -123,6 +125,8 @@ services:
   zeppelin:
     image: nutthaphon/zeppelin:0.8.1-sshd
     #restart: always
+    entrypoint: "bash -c"
+    command: "exit 0"
     container_name: zeppelin
     hostname: zeppelin
     #working_dir: "/zeppelin"
@@ -146,6 +150,8 @@ services:
     image: nutthaphon/mongo:4.0.10
     command: --bind_ip 0.0.0.0
     #restart: always
+    entrypoint: "bash -c"
+    command: "exit 0"
     container_name: mongodb
     hostname: mongodb
     environment:
@@ -162,6 +168,8 @@ services:
   columnstore:
     image: nutthaphon/mariadb-columnstore:1.2.3
     #restart: always
+    entrypoint: "bash -c"
+    command: "exit 0"
     container_name: columnstore
     hostname: columnstore
     environment:
