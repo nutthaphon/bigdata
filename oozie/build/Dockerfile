@@ -15,7 +15,7 @@ ENV OOZIE_HOME /oozie
 
 WORKDIR /oozie
 
-RUN wget http://archive.cloudera.com/gplextras/misc/ext-2.2.zip -O libext/ext-2.2.zip
+RUN mkdir libext && wget http://archive.cloudera.com/gplextras/misc/ext-2.2.zip -O libext/ext-2.2.zip
 
 EXPOSE 22 11000
 
