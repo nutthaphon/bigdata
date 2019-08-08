@@ -1,4 +1,4 @@
-FROM nutthaphon/oozie:5.1.0-jdk8
+FROM nutthaphon/oozie:latest
 
 LABEL maintainer="nutthaphon@gmail.com"
 
