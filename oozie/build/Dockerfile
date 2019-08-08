@@ -4,7 +4,9 @@ LABEL maintainer="nutthaphon@gmail.com"
 
 USER root
 
-RUN apt-get update && apt-get install -y unzip
+RUN apt-get update && apt-get install -y	\
+								unzip		\
+								wget
 
 USER oozie
 
@@ -13,7 +15,7 @@ ENV OOZIE_HOME /oozie
 
 WORKDIR /oozie
 
-ADD ext-2.2.zip libext/
+RUN wget http://archive.cloudera.com/gplextras/misc/ext-2.2.zip -O libext/
 
 EXPOSE 22 11000
 
