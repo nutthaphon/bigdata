@@ -2,24 +2,31 @@ version: "3"
 
 services:
   hdmaster:
-    image: nutthaphon/hadoop-master:3.1.2-spark2.4.3-jdk8
-    container_name: hdmaster
+    image: hadoop-base:ubuntu-18.04
+    container_name: hdmaster-test
     hostname: hdmaster
-    working_dir: "/spark"
-    #user: "1000:1000"
-    #stdin_open: true
-    #tty: true
+    working_dir: /admin-scripts
     environment:
-      - CLUSTER_NAME=poc
+      - CLUSTER_NAME=${CLUSTER_NAME}
+      - JAVA_HOME=${JAVA_HOME}
+      - HADOOP_HOME=${HADOOP_HOME}
+      - HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+      - SPARK_HOME=${SPARK_HOME}
+      - SPARK_JAR=hdfs://hdmaster:9000/user/spark/spark-jars.zip
+      - LD_LIBRARY_PATH=${HADOOP_HOME}/lib/native
+      - PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip
+      - PYSPARK_PYTHON=python3
+      - PYSPARK_DRIVER_PYTHON=python3
+      - PATH=$SPARK_HOME/python:${SPARK_HOME}/bin:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${JAVA_HOME}/bin:${PATH}
     ports:
       # SSH
       - "2220:22"
       # Hadoop Namenode Web
       - "9870:9870"
-      # Hadoop Datanode Web
-      #- "9864:9864"
       # YARN Resource Manager
       - "8088:8088"
+      # YARN Nodemanager Web UI
+      - "8043:8042"
       # MapReduce JobHistory Server 
       - "19888:19888"
       # Spark Context Web UI
@@ -29,189 +36,142 @@ services:
       # Livy Spark Server
       - "8998:8998"
     volumes:
-      - hdmaster-hadoop:/hadoop
-      - java-program:/java
-      - spark-program:/spark
-      - livy-spark:/livy
-      - pig-program:/pig
+      - hadoop-etc:/hadoop/etc
+      - hdmaster-dfs:/tmp/hadoop-hadoop
+      - hdmaster-logs:/hadoop/logs
+      - java-release:/java
+      - livy-conf:/livy/conf
+      - spark-conf:/spark/conf
+      - admin-scripts:/admin-scripts
   
   hdslave1:
-    image: nutthaphon/hadoop-slave1:3.1.2-spark2.4.3-jdk8
-    container_name: hdslave1
+    image: hadoop-base:ubuntu-18.04
+    container_name: hdslave1-test
     hostname: hdslave1
-    working_dir: "/spark"
-    #stdin_open: true
-    #tty: true
+    working_dir: /hadoop/logs
+    environment:
+      - CLUSTER_NAME=${CLUSTER_NAME}
+      - JAVA_HOME=${JAVA_HOME}
+      - HADOOP_HOME=${HADOOP_HOME}
+      - HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+      - SPARK_HOME=${SPARK_HOME}
+      - SPARK_JAR=hdfs://hdmaster:9000/user/spark/spark-jars.zip
+      - LD_LIBRARY_PATH=${HADOOP_HOME}/lib/native
+      - PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip
+      - PYSPARK_PYTHON=python3
+      - PYSPARK_DRIVER_PYTHON=python3
+      - PATH=$SPARK_HOME/python:${SPARK_HOME}/bin:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${JAVA_HOME}/bin:${PATH}
     ports:
       # SSH
       - "2221:22"
-      # Hadoop Datanode Web
-      #- "9864:9864"
+      # YARN Nodemanager Web UI
+      - "8044:8042"
       # Spark Context Web UI
       - "4041:4040"
-      # Node Manager
     volumes:
-      - hdslave1-hadoop:/hadoop
-      - java-program:/java
-      - spark-program:/spark
-
+      - hadoop-etc:/hadoop/etc
+      - hdslave1-dfs:/tmp/hadoop-hadoop
+      - hdslave1-logs:/hadoop/logs
+      - java-release:/java
+      - spark-conf:/spark/conf
+      - admin-scripts:/admin-scripts
+  
   hdslave2:
-    image: nutthaphon/hadoop-slave2:3.1.2-spark2.4.3-jdk8
-    container_name: hdslave2
+    image: hadoop-base:ubuntu-18.04
+    container_name: hdslave2-test
     hostname: hdslave2
-    working_dir: "/spark"
-    #stdin_open: true
-    #tty: true
+    working_dir: /hadoop/logs
+    environment:
+      - CLUSTER_NAME=${CLUSTER_NAME}
+      - JAVA_HOME=${JAVA_HOME}
+      - HADOOP_HOME=${HADOOP_HOME}
+      - HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+      - SPARK_HOME=${SPARK_HOME}
+      - SPARK_JAR=hdfs://hdmaster:9000/user/spark/spark-jars.zip
+      - LD_LIBRARY_PATH=${HADOOP_HOME}/lib/native
+      - PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip
+      - PYSPARK_PYTHON=python3
+      - PYSPARK_DRIVER_PYTHON=python3
+      - PATH=$SPARK_HOME/python:${SPARK_HOME}/bin:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${JAVA_HOME}/bin:${PATH}
     ports:
       # SSH
       - "2222:22"
-      # Hadoop Datanode Web
-      #- "9864:9864"
+      # YARN Nodemanager Web UI
+      - "8045:8042"
       # Spark Context Web UI
       - "4042:4040"
-      # Node Manager
     volumes:
-      - hdslave2-hadoop:/hadoop
-      - java-program:/java
-      - spark-program:/spark
-  
-  hiveserver2:
-    image: nutthaphon/hive2:3.1.1-jdk8
-    container_name: hiveserver2
-    hostname: hiveserver2
-    working_dir: "/program/hive"
-    stdin_open: true
-    tty: true
-    ports:
-      # SSH
-      - "2224:22"
-      # Derby
-      - "1527:1527"
-      # Thrift RPC
-      - "10000:10000"
-      # Thrift HTTP
-      - "10001:10001"
-      # HiveServer2 web
-      - "10002:10002"
-    volumes: 
-      - hdmaster-hadoop:/hadoop
-      - java-program:/java
-      - bigdata-program:/program
-
-  mysql:
-    image: nutthaphon/mariadb:10.4.6
-    command: --character-set-server=tis620 --collation-server=tis620_thai_ci
-    #restart: always
-    container_name: mysql
-    hostname: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: P@ssw0rd1
-    ports:
-      # Mysql listening port
-      - "13306:3306"
-    volumes:
-      - mysql-data1:/var/lib/mysql
-      - mysql-conf:/etc/mysql/conf.d
-
-  hueserver:
-    image: nutthaphon/hue:4.4.0
-    depends_on:
-      - mysql
-      - hiveserver2
-    #restart: always
-    #stdin_open: true
-    #tty: true
-    container_name: hueserver
-    hostname: hueserver
-    ports:
-      # Web listening port
-      - "8888:8888"
-    volumes:
-      - hdmaster-hadoop:/hadoop
-      - /home/nutt/Docker/bigdata/hue/conf/hue.ini:/usr/share/hue/desktop/conf/hue.ini
-
-  oozie:
-    image: nutthaphon/oozie:5.1.0
-    working_dir: "/oozie"
-    #restart: always
-    #stdin_open: true
-    #tty: true
-    container_name: oozie
-    hostname: oozie
-    ports:
-      # Oozie Web console
-      - "11000:11000"
-    volumes:
-      - hdmaster-hadoop:/hadoop
-      - oozie-program:/oozie
-      - pig-program:/pig
-      - java-program:/java
-      - spark-program:/spark
+      - hadoop-etc:/hadoop/etc
+      - hdslave2-dfs:/tmp/hadoop-hadoop
+      - hdslave2-logs:/hadoop/logs
+      - java-release:/java
+      - spark-conf:/spark/conf
+      - admin-scripts:/admin-scripts
 
 volumes:
-  mysql-data1:
+  hadoop-etc:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/mariadb/mysql/data1
-  mysql-conf:
+      device: /home/nutt/Docker/bigdata/hadoop/share/etc
+  hdmaster-dfs:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/mariadb/mysql/conf
-  bigdata-program:
+      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdmaster/tmp
+  hdslave1-dfs:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata
-  java-program:
+      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdslave1/tmp
+  hdslave2-dfs:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/java/jdk1.8.0_211
-  spark-program:
+      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdslave2/tmp
+  hdmaster-logs:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/spark/spark-2.4.3-bin-hadoop2.7
-  livy-spark:
+      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdmaster/logs
+  hdslave1-logs:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/spark/apache-livy-0.6.0-incubating-bin
-  hdmaster-hadoop:
+      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdslave1/logs
+  hdslave2-logs:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdmaster
-  hdslave1-hadoop:
+      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdslave2/logs
+  java-release:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave1
-  hdslave2-hadoop:
+      device: /home/nutt/Docker/bigdata/java/latest
+  livy-conf:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/hadoop-3.1.2-cluster/hdslave2
-  oozie-program:
+      device: /home/nutt/Docker/bigdata/livy/share/conf
+  spark-conf:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/oozie/oozie-5.1.0
-  pig-program:
+      device: /home/nutt/Docker/bigdata/spark/share/conf
+  admin-scripts:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/pig/pig-0.17.0
+      device: /home/nutt/Docker/bigdata/scripts
