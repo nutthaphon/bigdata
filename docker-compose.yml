@@ -2,7 +2,7 @@ version: "3"
 
 services:
   hdmaster:
-    image: hadoop-base:ubuntu-18.04
+    image: nutthaphon/hadoop:3.1.2-spark-2.4.3
     container_name: hdmaster-test
     hostname: hdmaster
     working_dir: /admin-scripts
@@ -45,7 +45,7 @@ services:
       - admin-scripts:/admin-scripts
   
   hdslave1:
-    image: hadoop-base:ubuntu-18.04
+    image: nutthaphon/hadoop:3.1.2-spark-2.4.3
     container_name: hdslave1-test
     hostname: hdslave1
     working_dir: /hadoop/logs
@@ -77,7 +77,7 @@ services:
       - admin-scripts:/admin-scripts
   
   hdslave2:
-    image: hadoop-base:ubuntu-18.04
+    image: nutthaphon/hadoop:3.1.2-spark-2.4.3
     container_name: hdslave2-test
     hostname: hdslave2
     working_dir: /hadoop/logs
