@@ -2,7 +2,7 @@ version: "3"
 
 services:
   puppeteer:
-    image: nutthaphon/node:10.16.2
+    image: nutthaphon/puppeteer:1.19.0
     container_name: puppeteer
     hostname: puppeteer
     #working_dir: /usr/src/app
