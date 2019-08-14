@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  puppeteer:
+    image: nutthaphon/node:10.16.2
+    container_name: puppeteer
+    hostname: puppeteer
+    #working_dir: /usr/src/app
+    ports:
+      - "8081:8081"
+    volumes:
+      - /home/nutt/Docker/bigdata/puppeteer/share/app:/app
+    #  - /home/nutt/Docker/bigdata/puppeteer/share/node_modules:/node_modules
