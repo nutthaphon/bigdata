@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y \
 							libarchive-tools \
 							zip \
 							unzip \
-							python3-pip
+							python3-pip \
+							dnsutils
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' | chpasswd
 RUN sed -i 's/PermitRootLogin/#PermitRootLogin/' /etc/ssh/sshd_config && echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
