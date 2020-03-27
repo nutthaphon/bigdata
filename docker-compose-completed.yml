@@ -182,7 +182,7 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/spark/apache-livy-0.6.0-incubating-bin
+      device: /home/nutt/Docker/bigdata/spark/apache-livy-0.7.0-incubating-bin
   hdmaster-hadoop:
     driver: local
     driver_opts:
