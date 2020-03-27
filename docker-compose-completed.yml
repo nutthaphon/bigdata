@@ -33,7 +33,6 @@ services:
       - java-program:/java
       - spark-program:/spark
       - livy-spark:/livy
-      - pig-program:/pig
   
   hdslave1:
     image: nutthaphon/hadoop-slave1:3.1.2-spark2.4.3-jdk8
@@ -144,7 +143,6 @@ services:
     volumes:
       - hdmaster-hadoop:/hadoop
       - oozie-program:/oozie
-      - pig-program:/pig
       - java-program:/java
       - spark-program:/spark
 
@@ -209,9 +207,3 @@ volumes:
       o: bind
       type: none
       device: /home/nutt/Docker/bigdata/oozie/oozie-5.1.0
-  pig-program:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/pig/pig-0.17.0
