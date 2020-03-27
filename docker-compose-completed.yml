@@ -172,7 +172,7 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/java/jdk1.8.0_211
+      device: /home/nutt/Docker/bigdata/java/jdk1.8.0_241
   spark-program:
     driver: local
     driver_opts:
