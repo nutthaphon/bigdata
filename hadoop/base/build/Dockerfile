@@ -6,9 +6,9 @@ ARG CLUSTER_NAME=test
 ARG JAVA_HOME=/java
 ARG HADOOP_HOME=/hadoop
 ARG SPARK_HOME=/spark
-ARG HADOOP_SOURCE=https://www-eu.apache.org/dist/hadoop/common/hadoop-3.1.2/hadoop-3.1.2.tar.gz
-ARG SPARK_SOURCE=https://www-us.apache.org/dist/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz
-ARG LIVY_SOURCE=https://www-eu.apache.org/dist/incubator/livy/0.6.0-incubating/apache-livy-0.6.0-incubating-bin.zip
+ARG HADOOP_SOURCE=https://www-eu.apache.org/dist/hadoop/common/hadoop-3.1.3/hadoop-3.1.3.tar.gz
+ARG SPARK_SOURCE=https://www-us.apache.org/dist/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz
+ARG LIVY_SOURCE=https://www-eu.apache.org/dist/incubator/livy/0.7.0-incubating/apache-livy-0.7.0-incubating-bin.zip
 
 USER root
 RUN apt-get update && apt-get install -y \
