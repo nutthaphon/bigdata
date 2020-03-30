@@ -27,7 +27,7 @@
     </property>
 	<property>
         <name>fs.defaultFS</name>
-        <value>hdfs://hdmaster:9000</value>
+        <value>hdfs://hdmaster:8020</value>
     </property>
     <property>
         <name>io.file.buffer.size</name>

@@ -1,6 +1,6 @@
+version: "3"
 
 services:
-
   hdmaster:
     image: nutthaphon/hadoop:3.1.3-spark-2.4.5
     container_name: hdmaster
@@ -14,8 +14,9 @@ services:
     ports:
       # SSH
       - "2220:22"
-      # Hadoop Namenode Web
+      # Hadoop Namenode
       - "9870:9870"
+      - "8020:8020"
       # YARN Resource Manager
       - "8088:8088"
       # YARN Nodemanager Web UI
