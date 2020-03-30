@@ -1,171 +1,16 @@
 
-
 services:
-  namenode:
-    image: nutthaphon/hadoop:3.1.2-jdk8
-    container_name: namenode
-    hostname: namenode
-    working_dir: "/program/hadoop"
-    stdin_open: true
-    tty: true
-    ports:
-      # SSH
-      - "2220:22"
-      # Hadoop Namenode Web
-      - "9870:9870"
-      # YARN Resource Manager
-      - "8088:8088"
-      # YARN Nodemanager Web UI
-      - "8043:8042"
-      # MapReduce JobHistory Server 
-      - "19888:19888"
-      # Spark Context Web UI
-      - "4040:4040"
-      # Spark History Server
-      - "18080:18080"
-      # Livy Spark Server
-      - "8998:8998"
-    volumes:
-      - hadoop-etc:/hadoop/etc
-      - hdmaster-dfs:/tmp/hadoop-hadoop
-      - hdmaster-logs:/hadoop/logs
-      - java-release:/java
-      - livy-conf:/livy/conf
-      - spark-conf:/spark/conf
-      - admin-scripts:/admin-scripts
-  
-  hbase:
-    image: nutthaphon/hbase:2.2.0-jdk8
-    container_name: hbase
-    hostname: hbase
-    working_dir: "/program/hbase"
-    stdin_open: true
-    tty: true
-    ports:
-      # SSH
-      - "2221:22"
-      # YARN Nodemanager Web UI
-      - "8044:8042"
-      # Spark Context Web UI
-      - "4041:4040"
-    volumes:
-      - bigdata-program:/program
-  hiveserver2:
-    image: nutthaphon/hive2:3.1.1-jdk8
-    container_name: hiveserver2
-    hostname: hiveserver2
-    working_dir: "/program/hive"
-    stdin_open: true
-    tty: true
-    ports:
-      # SSH
-      - "2222:22"
-      # YARN Nodemanager Web UI
-      - "8045:8042"
-      # Spark Context Web UI
-      - "4042:4040"
-    volumes:
-      - hadoop-etc:/hadoop/etc
-      - hdslave2-dfs:/tmp/hadoop-hadoop
-      - hdslave2-logs:/hadoop/logs
-      - java-release:/java
-      - spark-conf:/spark/conf
-      - admin-scripts:/admin-scripts
 
-volumes:
-  hadoop-etc:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/hadoop/share/etc
-  hdmaster-dfs:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdmaster/tmp
-  hdslave1-dfs:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdslave1/tmp
-  hdslave2-dfs:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdslave2/tmp
-  hdmaster-logs:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdmaster/logs
-  hdslave1-logs:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdslave1/logs
-  hdslave2-logs:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/hadoop/nodes/hdslave2/logs
-  java-release:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/java/latest
-  livy-conf:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/livy/share/conf
-  spark-conf:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/spark/share/conf
-  admin-scripts:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/scripts
-
-
-services:
-  namenode:
-    image: nutthaphon/hadoop:3.1.2-jdk8
-    container_name: namenode
-    hostname: namenode
-    working_dir: "/program/hadoop"
-    stdin_open: true
-    tty: true
   hdmaster:
-    image: nutthaphon/hadoop:3.1.2-spark-2.4.3
-    container_name: hdmaster-test
+    image: nutthaphon/hadoop:3.1.3-spark-2.4.5
+    container_name: hdmaster
     hostname: hdmaster
-    working_dir: /admin-scripts
+    working_dir: /scripts
     environment:
-      - CLUSTER_NAME=${CLUSTER_NAME}
-      - JAVA_HOME=${JAVA_HOME}
-      - HADOOP_HOME=${HADOOP_HOME}
+      - CLUSTER_NAME=hdcluster
+      - JAVA_HOME=/java
+      - HADOOP_HOME=/hadoop
       - HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-      - SPARK_HOME=${SPARK_HOME}
-      - SPARK_JAR=hdfs://hdmaster:9000/user/spark/spark-jars.zip
-      - LD_LIBRARY_PATH=${HADOOP_HOME}/lib/native
-      - PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip
-      - PYSPARK_PYTHON=python3
-      - PYSPARK_DRIVER_PYTHON=python3
-      - PATH=$SPARK_HOME/python:${SPARK_HOME}/bin:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${JAVA_HOME}/bin:${PATH}
     ports:
       # SSH
       - "2220:22"
@@ -187,35 +32,19 @@ services:
       - hadoop-etc:/hadoop/etc
       - hdmaster-dfs:/tmp/hadoop-hadoop
       - hdmaster-logs:/hadoop/logs
-      - java-release:/java
-      - livy-conf:/livy/conf
-      - spark-conf:/spark/conf
-      - admin-scripts:/admin-scripts
-  
-  hbase:
-    image: nutthaphon/hbase:2.2.0-jdk8
-    container_name: hbase
-    hostname: hbase
-    working_dir: "/program/hbase"
-    stdin_open: true
-    tty: true
+      - java-home:/java
+      - admin-scripts:/scripts
+
   hdslave1:
-    image: nutthaphon/hadoop:3.1.2-spark-2.4.3
-    container_name: hdslave1-test
+    image: nutthaphon/hadoop:3.1.3-spark-2.4.5
+    container_name: hdslave1
     hostname: hdslave1
-    working_dir: /hadoop/logs
+    working_dir: /scripts
     environment:
-      - CLUSTER_NAME=${CLUSTER_NAME}
-      - JAVA_HOME=${JAVA_HOME}
-      - HADOOP_HOME=${HADOOP_HOME}
+      - CLUSTER_NAME=hdcluster
+      - JAVA_HOME=/java
+      - HADOOP_HOME=/hadoop
       - HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-      - SPARK_HOME=${SPARK_HOME}
-      - SPARK_JAR=hdfs://hdmaster:9000/user/spark/spark-jars.zip
-      - LD_LIBRARY_PATH=${HADOOP_HOME}/lib/native
-      - PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip
-      - PYSPARK_PYTHON=python3
-      - PYSPARK_DRIVER_PYTHON=python3
-      - PATH=$SPARK_HOME/python:${SPARK_HOME}/bin:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${JAVA_HOME}/bin:${PATH}
     ports:
       # SSH
       - "2221:22"
@@ -224,38 +53,23 @@ services:
       # Spark Context Web UI
       - "4041:4040"
     volumes:
-      - bigdata-program:/program
-  hiveserver2:
-    image: nutthaphon/hive2:3.1.1-jdk8
-    container_name: hiveserver2
-    hostname: hiveserver2
-    working_dir: "/program/hive"
-    stdin_open: true
-    tty: true
       - hadoop-etc:/hadoop/etc
       - hdslave1-dfs:/tmp/hadoop-hadoop
       - hdslave1-logs:/hadoop/logs
-      - java-release:/java
-      - spark-conf:/spark/conf
-      - admin-scripts:/admin-scripts
+      - java-home:/java
+      - admin-scripts:/scripts
+
   
   hdslave2:
-    image: nutthaphon/hadoop:3.1.2-spark-2.4.3
-    container_name: hdslave2-test
+    image: nutthaphon/hadoop:3.1.3-spark-2.4.5
+    container_name: hdslave2
     hostname: hdslave2
-    working_dir: /hadoop/logs
+    working_dir: /scripts
     environment:
-      - CLUSTER_NAME=${CLUSTER_NAME}
-      - JAVA_HOME=${JAVA_HOME}
-      - HADOOP_HOME=${HADOOP_HOME}
+      - CLUSTER_NAME=hdcluster
+      - JAVA_HOME=/java
+      - HADOOP_HOME=/hadoop
       - HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-      - SPARK_HOME=${SPARK_HOME}
-      - SPARK_JAR=hdfs://hdmaster:9000/user/spark/spark-jars.zip
-      - LD_LIBRARY_PATH=${HADOOP_HOME}/lib/native
-      - PYTHONPATH=${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip
-      - PYSPARK_PYTHON=python3
-      - PYSPARK_DRIVER_PYTHON=python3
-      - PATH=$SPARK_HOME/python:${SPARK_HOME}/bin:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${JAVA_HOME}/bin:${PATH}
     ports:
       # SSH
       - "2222:22"
@@ -267,9 +81,8 @@ services:
       - hadoop-etc:/hadoop/etc
       - hdslave2-dfs:/tmp/hadoop-hadoop
       - hdslave2-logs:/hadoop/logs
-      - java-release:/java
-      - spark-conf:/spark/conf
-      - admin-scripts:/admin-scripts
+      - java-home:/java
+      - admin-scripts:/scripts
 
 volumes:
   hadoop-etc:
@@ -314,24 +127,12 @@ volumes:
       o: bind
       type: none
       device: /home/nutt/Docker/bigdata/hadoop/nodes/hdslave2/logs
-  java-release:
+  java-home:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/nutt/Docker/bigdata/java/latest
-  livy-conf:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/livy/share/conf
-  spark-conf:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/nutt/Docker/bigdata/spark/share/conf
+      device: /home/nutt/Docker/bigdata/java/jdk1.8.0_241
   admin-scripts:
     driver: local
     driver_opts:
