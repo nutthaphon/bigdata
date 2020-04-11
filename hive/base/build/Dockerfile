@@ -2,7 +2,6 @@ FROM ubuntu:18.04
 
 LABEL maintainer="nutthaphon@gmail.com"
 
-ARG CLUSTER_NAME=test
 ARG JAVA_HOME=/java
 ARG HADOOP_HOME=/hadoop
 ARG HIVE_HOME=/hive
@@ -32,12 +31,12 @@ RUN wget ${HADOOP_SOURCE} -O /tmp/hadoop.tar.gz && \
 
 USER hive
 RUN mkdir -p ~hive/.ssh && ssh-keygen -t rsa -P '' -f ~hive/.ssh/id_rsa     && cat ~hive/.ssh/id_rsa.pub >> ~hive/.ssh/authorized_keys         && chmod 0600 ~hive/.ssh/authorized_keys
-RUN wget ${HIVE_SOURCE}  -O /tmp/hive.tgz && \
-			tar -C /hive -xvf /tmp/hive.tgz --strip-components 1
+RUN wget ${HIVE_SOURCE}  -O /tmp/hive.tar.gz && \
+			tar -C /hive -xvf /tmp/hive.tar.gz --strip-components 1
 
 USER root
 
-RUN rm /tmp/hadoop.tar.gz && rm /tmp/spark.tgz && rm /tmp/livy.zip
+RUN rm /tmp/hadoop.tar.gz && rm /tmp/hive.tar.gz
 
 EXPOSE 22
 
